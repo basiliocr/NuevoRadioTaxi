@@ -1,0 +1,35 @@
+{% extends 'baseconductor.html' %}
+
+{% block content %}
+  <div class="container">
+    <h2 class="mb-4 text-center">Mi Vehículo</h2>
+
+    {% if vehiculo %}
+      <div class="card shadow-sm mx-auto" style="max-width: 700px;">
+        <div class="card-body">
+          <h5 class="card-title">Información del Vehículo</h5>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item"><strong>Matrícula:</strong> {{ vehiculo.matricula }}</li>
+            <li class="list-group-item"><strong>Marca:</strong> {{ vehiculo.marca }}</li>
+            <li class="list-group-item"><strong>Modelo:</strong> {{ vehiculo.modelo }}</li>
+            <li class="list-group-item"><strong>Año:</strong> {{ vehiculo.anio }}</li>
+            <li class="list-group-item"><strong>Color:</strong> {{ vehiculo.color }}</li>
+            <li class="list-group-item"><strong>Tipo:</strong> {{ vehiculo.vehicle_type | capitalize }}</li>
+          </ul>
+
+          <div class="mt-4 d-flex justify-content-between">
+            <a href="{{ url_for('vehicle.editar') }}" class="btn btn-primary">Editar</a>
+            <form action="{{ url_for('vehicle.eliminar') }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar tu vehículo? Esta acción no se puede deshacer.')">
+              <button type="submit" class="btn btn-danger">Eliminar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="alert alert-warning text-center">
+        No has registrado un vehículo aún.
+        <a href="{{ url_for('vehicle.registrar') }}" class="btn btn-link">Registrar ahora</a>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

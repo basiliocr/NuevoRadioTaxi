@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Taxi Express</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body class="{{ page_class }}">
+    <!-- <nav class="navbar">
+        <div class="logo">Taxi Express</div>
+        <ul>
+            <li><a href="{{ url_for('home') }}">Inicio</a></li>
+            {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('user.index') }}">Perfil</a></li>
+                <li><a href="{{ url_for('auth.logout') }}">Cerrar sesión</a></li>
+            {% else %}
+                <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                <li><a href="{{ url_for('auth.register_select') }}">Registro</a></li>
+            {% endif %}
+        </ul>
+    </nav> -->
+    <!-- 📦 Contenido principal -->
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+
+</body>
+</html>

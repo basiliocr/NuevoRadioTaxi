@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% set page_class = 'page-register' %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=True) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+<div class="hero">
+  <div class="main-box">
+    <div class="form-box">
+      <div id="after" style="left: 0"></div>
+
+      <div class="button-box">
+        <div id="btn" style="left: 110px"></div>
+        <a href="{{ url_for('auth.login') }}" class="toggle-btn" style="color: rgb(234, 234, 235);">Log in</a>
+        <button type="button" class="toggle-btn">Register</button>
+      </div>
+
+      <form id="register" class="input-group" method="POST" action="{{ url_for('auth.register', role=role) }}">
+        {{ form.hidden_tag() }}
+        {{ form.nombre(class="input-field", placeholder="Full Name") }}
+        {{ form.username(class="input-field", id="username", placeholder="Username") }}
+        {{ form.email(class="input-field", id="email", placeholder="Email", type="email") }}
+        {{ form.telefono(class="input-field", id="telefono", placeholder="Phone", type="tel") }}
+        {{ form.password(class="input-field", placeholder="Password") }}
+        {{ form.role_id(value=role_obj.id) }}
+        <input type="submit" class="submit-btn" value="Register">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+      </form>
+    </div>
+    <span class="sp sp-t"></span>
+    <span class="sp sp-r"></span>
+    <span class="sp sp-b"></span>
+    <span class="sp sp-l"></span>
+  </div>
+</div>
+
+<script>
+  function setRole(roleId) {
+    document.getElementById("role_id").value = roleId;
+  }
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form");
+    const inputs = form.querySelectorAll("input, select");
+
+    const usernameInput = document.getElementById("username");
+    const emailInput = document.getElementById("email");
+    const telefonoInput = document.getElementById("telefono");
+
+    function validarEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    function verificarDuplicado(input, tipo) {
+        fetch(`/auth/check_${tipo}?valor=${input.value}`)
+            .then(response => response.json())
+            .then(data => {
+                if (!data.available) {
+                    input.setCustomValidity(`Este ${tipo} ya está en uso.`);
+                } else {
+                    input.setCustomValidity("");
+                }
+            });
+    }
+
+    inputs.forEach(input => {
+        input.addEventListener("input", function () {
+            const errorField = document.getElementById(`error-${input.id}`);
+            if (!errorField) return;
+
+            if (input.id === "email" && !validarEmail(input.value)) {
+                input.classList.add("input-error");
+                errorField.textContent = "Debe incluir un @ y un dominio válido.";
+            } else if (!input.checkValidity()) {
+                input.classList.add("input-error");
+                errorField.textContent = input.validationMessage;
+            } else {
+                input.classList.remove("input-error");
+                errorField.textContent = "";
+            }
+        });
+    });
+
+    usernameInput.addEventListener("blur", () => verificarDuplicado(usernameInput, "username"));
+    emailInput.addEventListener("blur", () => verificarDuplicado(emailInput, "email"));
+    telefonoInput.addEventListener("blur", () => verificarDuplicado(telefonoInput, "telefono"));
+
+    form.addEventListener("submit", function (event) {
+        let valid = true;
+        inputs.forEach(input => {
+            const errorField = document.getElementById(`error-${input.id}`);
+            if (!input.checkValidity()) {
+                input.classList.add("input-error");
+                if (errorField) errorField.textContent = input.validationMessage;
+                valid = false;
+            }
+        });
+
+        if (!valid) {
+            event.preventDefault();
+            alert("Corrige los errores antes de enviar el formulario.");
+        }
+    });
+
+    const flashMessages = document.querySelector(".flash-messages");
+    if (flashMessages) {
+        setTimeout(() => {
+            flashMessages.style.display = "none";
+        }, 3000);
+    }
+});
+</script>
+<!-- 🕒 Script para ocultar flashes -->
+    <script>
+        setTimeout(() => {
+            const flashes = document.querySelectorAll('.flash-messages .alert');
+            flashes.forEach(flash => flash.remove());
+        }, 3000);
+    </script>
+{% endblock %}

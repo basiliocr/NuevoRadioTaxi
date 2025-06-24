@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Taxi Express - Conductor{% endblock %}</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/baseconductor.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
+    <a class="navbar-brand fw-bold" href="{{ url_for('userdriver.dashboard') }}">
+        <i class="fas fa-taxi text-warning me-2"></i>Taxi Express
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarDriver">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarDriver">
+    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'userdriver.dashboard' %}active{% endif %}"
+                href="{{ url_for('userdriver.dashboard') }}">
+                Inicio
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('trip.ver_solicitudes_disponibles') }}">Solicitudes de Pasajeros</a>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                Historial
+            </a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ url_for('trip.historial_conductor') }}">Como Conductor</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('trip.historial_pasajero_conductor') }}">Como Pasajero</a></li>
+            </ul>
+        </li>
+
+    
+        {% if not current_user.driver_profile %}
+        <li class="nav-item">
+            <a class="nav-link text-warning" href="{{ url_for('driver_profile.editar_perfil') }}">
+                <i class="fas fa-exclamation-triangle me-1 text-warning"></i>Crear Perfil de Conductor
+            </a>
+        </li>
+        {% else %}
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                Perfil
+                {% if not current_user.vehiculo %}
+                <i class="fas fa-exclamation-circle text-warning ms-1" title="Vehículo no registrado"></i>
+                {% endif %}
+            </a>
+            <ul class="dropdown-menu">
+                <li>
+                    <a class="dropdown-item" href="{{ url_for('driver_profile.ver_perfil') }}">Perfil de Usuario</a>
+                </li>
+                {% if current_user.vehiculo %}
+                <li>
+                    <a class="dropdown-item" href="{{ url_for('vehicle.ver_vehiculo') }}">Mi Vehículo</a>
+                </li>
+                {% else %}
+                <li>
+                    <a class="dropdown-item text-warning" href="{{ url_for('vehicle.registrar') }}">
+                        <i class="fas fa-car text-warning me-1"></i>Registrar Vehículo
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </li>
+        {% endif %}
+    </ul>
+
+
+      <ul class="navbar-nav d-flex">
+        <li class="nav-item">
+          <a class="nav-link text-danger" href="{{ url_for('auth.logout') }}">
+            <i class="fas fa-sign-out-alt me-1"></i>Salir
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

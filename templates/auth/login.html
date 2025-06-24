@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% set page_class = 'page-login' %}
+
+{% block content %}
+<div class="hero">
+  <div class="main-box">
+    <div class="form-box">
+      <div id="after" style="left: 50%"></div>
+        
+      <div class="button-box">
+        <div id="btn" style="left: 0"></div>
+        <button type="button" class="toggle-btn">Log in</button>
+        <a href="{{ url_for('auth.register_select') }}" class="toggle-btn" style="color: rgb(234, 234, 235);">Register</a>
+      </div>
+      <form id="login" class="input-group" method="POST" action="{{ url_for('auth.login') }}">
+        {{ form.hidden_tag() }}
+        {{ form.username(class="input-field", placeholder="Username", required=True) }}
+        {{ form.password(class="input-field", placeholder="Password", required=True) }}
+
+        <input type="submit" class="submit-btn" value="Log in">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+      </form>
+    </div>
+    <span class="sp sp-t"></span>
+    <span class="sp sp-r"></span>
+    <span class="sp sp-b"></span>
+    <span class="sp sp-l"></span>
+  </div>
+</div>
+<!-- 🕒 Script para ocultar flashes -->
+    <script>
+        setTimeout(() => {
+            const flashes = document.querySelectorAll('.flash-messages .alert');
+            flashes.forEach(flash => flash.remove());
+        }, 3000);
+    </script>
+{% endblock %}

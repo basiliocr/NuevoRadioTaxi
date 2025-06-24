@@ -1,0 +1,26 @@
+{% extends "baseuser.html" %}
+{% block title %}Ticket de Viaje{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="card shadow-lg border border-warning">
+    <div class="card-header bg-dark text-warning">
+      <h4 class="mb-0">🎫 Ticket de tu viaje</h4>
+    </div>
+    <div class="card-body bg-light">
+      <p><strong>📍 Recogida:</strong> {{ viaje.pickup_address_text }}</p>
+      <p><strong>🎯 Destino:</strong> {{ viaje.dropoff_address_text }}</p>
+      <p><strong>🚗 Tipo de vehículo:</strong> {{ viaje.vehicle_type.title() }}</p>
+      <p><strong>💰 Tarifa estimada:</strong> Bs {{ viaje.tarifa_estimada }}</p>
+      <p class="mt-3 alert alert-info"><i class="fas fa-clock me-2"></i>Un conductor será asignado pronto. Te avisaremos al estar en camino.</p>
+      {% if pago %}
+      <p><strong>💳 Forma de pago:</strong> {{ pago.payment_method.name }}</p>
+      {% endif %}
+
+      <a href="{{ url_for('user.dashboard') }}" class="btn btn-dark mt-2">
+        <i class="fas fa-home me-1"></i> Volver al inicio
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

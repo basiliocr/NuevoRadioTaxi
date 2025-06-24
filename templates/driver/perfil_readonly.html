@@ -1,0 +1,56 @@
+{% extends 'baseconductor.html' %}
+
+{% block content %}
+  <div class="container">
+    <h2 class="mb-4 text-center">Perfil de Usuario</h2>
+
+    {% if perfil %}
+      <div class="card shadow-sm mx-auto" style="max-width: 700px;">
+        <div class="card-body">
+          <h5 class="card-title">Información del Conductor</h5>
+
+          {% if perfil.foto_perfil %}
+            <div class="text-center mb-3">
+              <img src="{{ url_for('static', filename='uploads/' ~ perfil.foto_perfil) }}" alt="Foto de perfil" class="img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
+            </div>
+          {% endif %}
+
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item"><strong>Nombre:</strong> {{ current_user.nombre }}</li>
+            <li class="list-group-item"><strong>Email:</strong> {{ current_user.email }}</li>
+            <li class="list-group-item"><strong>Teléfono:</strong> {{ current_user.telefono }}</li>
+            <li class="list-group-item"><strong>CI:</strong> {{ perfil.ci }}</li>
+            <li class="list-group-item"><strong>Licencia:</strong> {{ perfil.licencia }}</li>
+            <li class="list-group-item"><strong>Fecha de Expiración:</strong> {{ perfil.fecha_expiracion_licencia.strftime('%d/%m/%Y') }}</li>
+            <li class="list-group-item"><strong>Disponibilidad:</strong> {{ perfil.disponibilidad }}</li>
+          </ul>
+
+          {% if perfil.documento_seguro %}
+            <div class="mt-3">
+              <strong>Documento del seguro:</strong><br>
+              <img src="{{ url_for('static', filename='uploads/' ~ perfil.documento_seguro) }}" alt="Documento del seguro" class="img-fluid rounded shadow mt-2" style="max-height: 300px;">
+            </div>
+          {% endif %}
+
+          <div class="mt-4 d-flex justify-content-between">
+            <a href="{{ url_for('driver_profile.editar_perfil') }}" class="btn btn-primary">Editar</a>
+          
+            <a href="{{ url_for('review.ver_reseñas_conductor', user_id=perfil.user_id) }}" class="btn btn-outline-info mx-2">
+              Ver Reseñas
+            </a>
+          
+            <form action="{{ url_for('driver_profile.eliminar_perfil') }}" method="POST"
+              onsubmit="return confirm('¿Estás seguro de que deseas eliminar tu perfil? Esta acción no se puede deshacer.')">
+              <button type="submit" class="btn btn-danger">Eliminar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="alert alert-warning text-center">
+        No has registrado tu perfil como conductor aún.
+        <a href="{{ url_for('driver_profile.editar_perfil') }}" class="btn btn-link">Completarlo ahora</a>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

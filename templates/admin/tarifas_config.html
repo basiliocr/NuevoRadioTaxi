@@ -1,0 +1,30 @@
+{% extends "baseadmin.html" %}
+{% block title %}Configurar Tarifas{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h3><i class="fas fa-coins me-2"></i> Tarifas por Tipo de Vehículo</h3>
+  <form method="POST" class="mt-4 w-50">
+    {% for tipo, t in tarifas.items() %}
+      <div class="card mb-3">
+        <div class="card-header bg-dark text-white">
+          {{ tipo.title() }}
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label>Tarifa Base (Bs)</label>
+            <input type="number" name="{{ tipo }}_base" step="0.01" class="form-control"
+                   value="{{ t.tarifa_base }}">
+          </div>
+          <div class="mb-3">
+            <label>Tarifa por Km (Bs)</label>
+            <input type="number" name="{{ tipo }}_por_km" step="0.01" class="form-control"
+                   value="{{ t.tarifa_por_km }}">
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    <button class="btn btn-primary"><i class="fas fa-save me-1"></i> Guardar Tarifas</button>
+  </form>
+</div>
+{% endblock %}

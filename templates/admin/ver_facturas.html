@@ -1,0 +1,51 @@
+{% extends "baseadmin.html" %}
+{% block title %}Facturas Generadas{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h3 class="mb-4"><i class="fas fa-file-invoice me-2"></i>Facturas Generadas</h3>
+
+  <form method="GET" class="row g-3 mb-4">
+    <div class="col-md-4">
+      <label>Desde</label>
+      <input type="date" name="fecha_inicio" class="form-control" value="{{ request.args.fecha_inicio or '' }}">
+    </div>
+    <div class="col-md-4">
+      <label>Hasta</label>
+      <input type="date" name="fecha_fin" class="form-control" value="{{ request.args.fecha_fin or '' }}">
+    </div>
+    <div class="col-md-3">
+      <label>Monto mínimo (Bs)</label>
+      <input type="number" step="0.01" name="monto_min" class="form-control" value="{{ request.args.monto_min or '' }}">
+    </div>
+    <div class="col-md-1 d-flex align-items-end">
+      <button class="btn btn-primary w-100"><i class="fas fa-filter"></i></button>
+    </div>
+  </form>
+
+  <table class="table table-hover shadow-sm">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Factura #</th>
+        <th>Fecha</th>
+        <th>Cliente</th>
+        <th>Monto (Bs)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for f in facturas %}
+      <tr>
+        <td>{{ f.id }}</td>
+        <td>{{ f.invoice_number }}</td>
+        <td>{{ f.fecha_emision.strftime('%d/%m/%Y %H:%M') }}</td>
+        <td>{{ f.detalles_json.usuario }}</td>
+        <td>{{ f.monto_total }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="text-center text-muted">No se encontraron facturas en ese rango</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

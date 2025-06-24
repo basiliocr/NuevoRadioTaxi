@@ -1,0 +1,30 @@
+{% extends "baseuser.html" %}
+{% block title %}Mi Perfil{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h3 class="mb-4 text-center">👤 Mi perfil</h3>
+
+  <div class="bg-light p-4 rounded shadow-sm w-50 mx-auto border-start border-4 border-dark">
+    <p><strong>Nombre completo:</strong> {{ user.nombre }}</p>
+    <p><strong>Usuario:</strong> {{ user.username }}</p>
+    <p><strong>Correo electrónico:</strong> {{ user.email }}</p>
+    <p><strong>Teléfono:</strong> {{ user.telefono or "—" }}</p>
+
+    <div class="d-flex justify-content-end mt-4 gap-2">
+      <a href="{{ url_for('user.edit', id=user.id) }}" class="btn btn-warning">
+        ✏️ Editar
+      </a>
+      <a href="{{ url_for('user.dashboard') }}" class="btn btn-secondary">
+        🔙 Volver
+      </a>
+      <form method="POST" action="{{ url_for('user.delete', id=user.id) }}"
+        onsubmit="return confirm('¿Estás seguro de que querés eliminar tu cuenta? Esta acción no se puede deshacer.')">
+        <button type="submit" class="btn btn-outline-danger mt-3">
+          🗑️ Eliminar perfil
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "baseconductor.html" %}
+{% block title %}Dashboard - Conductor (Modo Pasajero){% endblock %}
+
+{% block content %}
+<div class="text-center mb-5">
+  <h2 class="fw-bold">¡Bienvenido, {{ current_user.nombre }} 👋!</h2>
+  <p class="text-muted">¿Querés pedir un viaje también como pasajero?</p>
+</div>
+
+{% if viaje_activo %}
+  <div class="alert alert-success border-start border-4 border-success">
+    <h5 class="mb-2">🚖 Estás en un viaje activo</h5>
+    <p>
+      Recogida: <strong>{{ viaje_activo.trip_request.pickup_address_text }}</strong><br>
+      Destino: <strong>{{ viaje_activo.trip_request.dropoff_address_text }}</strong><br>
+      Vehículo: {{ viaje_activo.trip_request.vehicle_type }}<br>
+      Tarifa: Bs {{ viaje_activo.trip_request.tarifa_estimada }}
+    </p>
+    <div class="d-flex justify-content-between align-items-center">
+      <form action="{{ url_for('trip.finalizar_viaje', trip_id=viaje_activo.id) }}" method="POST">
+        <button class="btn btn-sm btn-success" onclick="return confirm('¿Finalizar este viaje?')">
+          Finalizar viaje
+        </button>
+      </form>
+    </div>
+  </div>
+{% endif %}
+
+
+<div class="row row-cols-1 row-cols-md-2 g-4">
+  <div class="col">
+    <div class="card text-bg-primary h-100 shadow-sm">
+      <div class="card-body text-center">
+        <i class="fas fa-map-marker-alt fa-2x mb-3"></i>
+        <h5 class="card-title">Solicitar viaje</h5>
+        <p class="card-text">Pedí un viaje como pasajero en cualquier momento.</p>
+        <a href="{{ url_for('userdriver.solicitar_viaje') }}" class="btn btn-light">Solicitar</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card text-bg-dark h-100 shadow-sm">
+      <div class="card-body text-center">
+        <i class="fas fa-history fa-2x mb-3 text-info"></i>
+        <h5 class="card-title">Mis viajes</h5>
+        <p class="card-text">Consulta tu historial de viajes como pasajero.</p>
+        <a href="{{ url_for('trip.historial_conductor') }}" class="btn btn-outline-info">Ver historial</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card text-bg-secondary h-100 shadow-sm">
+      <div class="card-body text-center">
+        <i class="fas fa-user-circle fa-2x mb-3"></i>
+        <h5 class="card-title">Perfil</h5>
+        <p class="card-text">Revisá o editá tus datos personales.</p>
+        <a href="{{ url_for('driver_profile.ver_perfil') }}" class="btn btn-light">Mi perfil</a>
+      </div>
+    </div>
+  </div>
+
+  
+</div>
+{% endblock %}

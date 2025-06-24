@@ -1,0 +1,83 @@
+{% extends "baseadmin.html" %}
+{% block title %}Dashboard Admin{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-tools me-2 text-info"></i>Panel de Control</h2>
+
+<div class="row g-4">
+  <div class="col-md-4">
+    <a href="{{ url_for('admin.ver_solicitudes_admin') }}" class="text-decoration-none">
+      <div class="card shadow-sm h-100 border-info">
+        <div class="card-body text-center">
+          <i class="fas fa-file-alt fa-2x text-info mb-2"></i>
+          <h5 class="card-title">Solicitudes</h5>
+          <p class="card-text text-muted">Ver y gestionar solicitudes activas.</p>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="col-md-4">
+    <a href="{{ url_for('admin.ver_viajes_admin') }}" class="text-decoration-none">
+      <div class="card shadow-sm h-100 border-warning">
+        <div class="card-body text-center">
+          <i class="fas fa-route fa-2x text-warning mb-2"></i>
+          <h5 class="card-title">Viajes</h5>
+          <p class="card-text text-muted">Revisar historial y controlar trayectos.</p>
+        </div>
+      </div>
+    </a>
+  </div>
+
+
+  <div class="col-md-4">
+    <a href="{{ url_for('admin.ver_usuarios_admin') }}" class="text-decoration-none">
+      <div class="card shadow-sm h-100 border-info">
+        <div class="card-body text-center">
+          <i class="fas fa-users fa-2x text-primary mb-2"></i>
+          <h5 class="card-title">Usuarios</h5>
+          <p class="card-text text-muted">Ver y gestionar usuarios registrados.</p>
+        </div>
+      </div>
+    </a>
+  </div>
+<div class="row g-4">
+  <div class="col-md-4">
+    <a href="{{ url_for('admin.ver_facturas_admin') }}" class="text-decoration-none">
+      <div class="card shadow-sm h-100 border-info">
+        <div class="card-body text-center">
+          <i class="fas fa-receipt fa-2x text-info mb-2"></i>
+          <h5 class="card-title">Facturas</h5>
+          <p class="card-text text-muted">Ver Facturas generadas.</p>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="col-md-4">
+  <a href="{{ url_for('admin.configurar_tarifas') }}" class="text-decoration-none">
+    <div class="card shadow-sm h-100 border-success">
+      <div class="card-body text-center">
+        <i class="fas fa-coins fa-2x text-success mb-2"></i>
+        <h5 class="card-title">Tarifas Base</h5>
+        <p class="card-text text-muted">Configurar precios por tipo de vehículo.</p>
+      </div>
+    </div>
+  </a>
+</div>
+
+  <div class="col-md-4">
+  <a href="{{ url_for('admin.estadisticas_financieras') }}" class="text-decoration-none">
+    <div class="card shadow-sm h-100 border-secondary">
+      <div class="card-body text-center">
+        <i class="fas fa-chart-line fa-2x text-secondary mb-2"></i>
+        <h5 class="card-title">Estadísticas</h5>
+        <p class="card-text text-muted">Ver métricas del negocio y desempeño mensual.</p>
+      </div>
+    </div>
+  </a>
+</div>
+
+  <!-- Más tarjetas según módulos futuros -->
+</div>
+{% endblock %}

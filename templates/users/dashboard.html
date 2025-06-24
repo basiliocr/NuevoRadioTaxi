@@ -1,0 +1,73 @@
+{% extends "baseuser.html" %}
+{% block title %}Dashboard - Pasajero{% endblock %}
+
+{% block content %}
+<div class="text-center mb-5">
+  <h2 class="fw-bold">Bienvenido, {{ current_user.nombre }} 👋</h2>
+  <p class="text-muted">¿Qué te gustaría hacer hoy?</p>
+</div>
+{% if viaje_activo %}
+  <div class="alert alert-warning border-start border-4 border-dark">
+    <h5 class="mb-2">🚕 Tienes un viaje pendiente</h5>
+    <p>
+      Recogida: <strong>{{ viaje_activo.pickup_address_text }}</strong><br>
+      Destino: <strong>{{ viaje_activo.dropoff_address_text }}</strong><br>
+      Vehículo: {{ viaje_activo.vehicle_type }}<br>
+      Tarifa: Bs {{ viaje_activo.tarifa_estimada }}
+    </p>
+    <div class="d-flex justify-content-between align-items-center">
+      <span class="badge bg-dark p-2">⏳ Buscando conductor...</span>
+      <a href="{{ url_for('user.ticket_viaje', viaje_id=viaje_activo.id) }}" class="btn btn-outline-dark btn-sm">
+        Ver ticket
+      </a>
+    </div>
+  </div>
+{% endif %}
+<div class="row row-cols-1 row-cols-md-2 g-4">
+
+  <div class="col">
+    <div class="card text-bg-primary h-100 shadow-sm">
+      <div class="card-body text-center">
+        <i class="fas fa-map-marker-alt fa-2x mb-3"></i>
+        <h5 class="card-title">Solicitar viaje</h5>
+        <p class="card-text">Pide un viaje rápidamente indicando tu destino.</p>
+        <a href="{{ url_for('user.solicitar_viaje') }}" class="btn btn-light">Solicitar</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card text-bg-dark h-100 shadow-sm">
+      <div class="card-body text-center">
+        <i class="fas fa-history fa-2x mb-3 text-info"></i>
+        <h5 class="card-title">Mis viajes</h5>
+        <p class="card-text">Consulta tu historial de viajes anteriores.</p>
+        <a href="#" class="btn btn-outline-info">Ver historial</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card text-bg-secondary h-100 shadow-sm">
+      <div class="card-body text-center">
+        <i class="fas fa-user-circle fa-2x mb-3"></i>
+        <h5 class="card-title">Perfil</h5>
+        <p class="card-text">Revisa o edita tu información personal.</p>
+        <a href="{{ url_for('user.perfil') }}" class="btn btn-light">Mi perfil</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card text-bg-warning h-100 shadow-sm">
+      <div class="card-body text-center">
+        <i class="fas fa-comments fa-2x mb-3"></i>
+        <h5 class="card-title">Mensajes</h5>
+        <p class="card-text">Comunícate con tu conductor mientras esperas.</p>
+        <a href="#" class="btn btn-dark">Ir al chat</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

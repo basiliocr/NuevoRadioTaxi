@@ -1,0 +1,45 @@
+{% extends "baseconductor.html" %}
+{% block title %}Solicitudes Disponibles{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h3 class="mb-4">🛎️ Solicitudes de Viaje Disponibles</h3>
+  
+  {% if solicitudes %}
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th>Pasajero</th>
+            <th>Recogida</th>
+            <th>Destino</th>
+            <th>Tipo de Vehículo</th>
+            <th>Tarifa</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in solicitudes %}
+          <tr>
+            <td>Usuario #{{ s.passenger_user_id }}</td> 
+            <td>{{ s.pickup_address_text }}</td>
+            <td>{{ s.dropoff_address_text }}</td>
+            <td>{{ s.vehicle_type.title() }}</td>
+            <td>Bs {{ s.tarifa_estimada }}</td>
+            <td>
+              <form action="{{ url_for('trip.aceptar_solicitud', solicitud_id=s.id) }}" method="POST">
+                <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('¿Aceptar esta solicitud?')">
+                  Aceptar
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-info">Actualmente no hay solicitudes disponibles para tu tipo de vehículo.</div>
+  {% endif %}
+</div>
+{% endblock %}

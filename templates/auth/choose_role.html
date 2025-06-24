@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% set page_class = 'page-choose' %}
+{% block content %}
+<div class="hero">
+  <div class="main-box">
+    <div class="form-box">
+      <div>
+         <div class="vertical-buttons">
+        <a href="{{ url_for('auth.register', role='pasajero') }}" class="submit-btn">Registrar como Pasajero</a>
+        <a href="{{ url_for('auth.register', role='conductor') }}" class="submit-btn">Registrar como Conductor</a>
+        </div>
+      </div>
+    </div>
+    <span class="sp sp-t"></span>
+    <span class="sp sp-r"></span>
+    <span class="sp sp-b"></span>
+    <span class="sp sp-l"></span>
+  </div>
+</div>
+{% endblock %}

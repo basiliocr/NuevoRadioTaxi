@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taxi Express - Inicio</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/baseindex.css') }}">
+
+</head>
+<body data-bs-spy="scroll" data-bs-target="#navbarScroll" data-bs-offset="80" tabindex="0">
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4" id="navbarScroll">
+    <a class="navbar-brand d-flex align-items-center me-4" href="{{ url_for('home') }}">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+        <span class="fw-bold text-white">Taxi Express</span>
+    </a>
+    
+    <!-- Enlaces ScrollSpy a la izquierda del navbar -->
+    <div class="d-flex gap-3">
+        <a href="#conduce" class="nav-link text-white scroll-link">Conduce</a>
+        <a href="#viaje" class="nav-link text-white scroll-link">Viaje</a>
+        <a href="#funcionamos" class="nav-link text-white scroll-link">¿Cómo funcionamos?</a>
+    </div>
+
+    <!-- Botones login/registro a la derecha -->
+    <div class="ms-auto d-flex gap-2">
+        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light">Login</a>
+        <a href="{{ url_for('auth.register_select') }}" class="btn btn-warning">Registro</a>
+    </div>
+    </nav>
+
+
+    <!-- Carrusel -->
+    <div class="container my-4">
+        <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="{{ url_for('static', filename='images/city1.jpg') }}" class="d-block w-100" alt="Ciudad 1">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>Conectividad y confianza</h5>
+                        <p>Viaja con Taxi Express: tu destino, nuestro compromiso.</p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="{{ url_for('static', filename='images/city2.jpg') }}" class="d-block w-100" alt="Ciudad 2">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>Disponibles 24/7</h5>
+                        <p>Estamos contigo cuando más lo necesitas, en cualquier momento.</p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="{{ url_for('static', filename='images/city3.jpg') }}" class="d-block w-100" alt="Ciudad 3">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>Conductores confiables</h5>
+                        <p>Personal capacitado para un viaje seguro y agradable.</p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="{{ url_for('static', filename='images/city4.jpg') }}" class="d-block w-100" alt="Ciudad 4">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>Tu ciudad, tu ritmo</h5>
+                        <p>Taxi Express te conecta con cada rincón de la ciudad.</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Siguiente</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Sección Conduce -->
+    <div id="conduce" class="container text-center py-5 mt-5">
+    <!-- Incentivo para conductores -->
+    <div class="seccion-compacta">
+    <div class="container text-center py-5 mt-5 bg-dark text-light rounded shadow">
+        <h2 class="display-5 fw-bold text-warning mb-3">¿Eres Conductor?</h2>
+        <p class="fs-5 mb-3">
+            Forma parte de <strong>Taxi Express</strong> y comienza a ganar ingresos manejando en tu ciudad.
+        </p>
+        <p class="text-white-50 mb-4">
+            Te ofrecemos una plataforma segura, más pasajeros, flexibilidad de horarios. Empieza una vez que te registres.
+        </p>
+        <a href="{{ url_for('auth.register', role='conductor') }}" class="button-64"><span class="text">Únete como Conductor</span></a>
+
+    </div>
+    </div>
+    </div>
+    
+    <!-- Sección Viaje -->
+    <div id="viaje" class="container text-center py-5 mt-5">
+        <div class="seccion-compacta">
+        <div class="container text-center py-5 mt-4 bg-dark text-light rounded shadow">
+        <h2 class="display-5 fw-bold text-info mb-3">¿Ya tienes una cuenta?</h2>
+        <p class="fs-5 mb-3">
+            Gracias por confiar en <strong>Taxi Express</strong>. Estamos encantados de acompañarte en cada viaje.
+        </p>
+        <p class="text-white-50 mb-4">
+            Si ya eres parte de nuestra familia, accede con tu cuenta y continúa tu camino con nosotros.
+        </p>
+        <a href="{{ url_for('auth.login') }}" class="button-64"><span class="text">Iniciar Sesión</span></a>
+
+    </div>
+    </div>
+    </div>
+    
+    <!-- Sección Cómo funcionamos -->
+<div id="funcionamos" class="my-5 container text-light text-center">
+    <div class="parent">
+        <div class="div1">
+            <img src="{{ url_for('static', filename='images/viaje.png') }}" alt="Viaje" class="mb-3">
+            <h5>1. Agrega los detalles del viaje</h5>
+            <p>Ingresa el punto de inicio y el destino, y consulta los precios de tu viaje.</p>
+        </div>
+        <div class="div2">
+            <img src="{{ url_for('static', filename='images/pago.png') }}" alt="Pago" class="mb-3">
+            <h5>2. Paga fácilmente</h5>
+            <p>Agrega tu método de pago preferido y elige entre las opciones de viaje disponibles en tu ubicación.</p>
+        </div>
+        <div class="div3">
+            <img src="{{ url_for('static', filename='images/espera.png') }}" alt="Espera" class="mb-3">
+            <h5>3. Espera al socio de la App</h5>
+            <p>Taxi Express te asignará un conductor cercano y recibirás actualizaciones para encontrarte con él.</p>
+        </div>
+    </div>
+</div>
+
+    
+    <!-- Footer -->
+    <footer class="text-center py-4 mt-5">
+        <div class="container">
+            <p class="mb-1">&copy; 2025 Taxi Express. Todos los derechos reservados.</p>
+            <p class="mb-0">Síguenos en 
+                <a href="#"><i class="fab fa-facebook-f"></i> Facebook</a> | 
+                <a href="#"><i class="fab fa-instagram"></i> Instagram</a> | 
+                <a href="#"><i class="fab fa-twitter"></i> Twitter</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+  // Al cargar la página, desplazarse al tope si hay un hash
+  window.addEventListener('load', function () {
+    if (window.location.hash) {
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'auto' });
+        history.replaceState(null, null, window.location.pathname);
+      }, 10); // Espera breve para que no se ejecute el scroll automático al hash
+    }
+  });
+</script>
+
+    
+</body>
+</html>

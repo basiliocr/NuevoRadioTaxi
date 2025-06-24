@@ -1,0 +1,66 @@
+{% extends "baseconductor.html" %}
+{% block title %}Historial de Viajes (Conductor){% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h3 class="mb-4">🚘 Historial de Viajes como Conductor</h3>
+
+  {% if viajes %}
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered align-middle">
+        <thead class="table-dark text-center">
+          <tr>
+            <th>Pasajero</th>
+            <th>Recogida</th>
+            <th>Destino</th>
+            <th>Tipo</th>
+            <th>Tarifa</th>
+            <th>Fecha</th>
+            <th>Detalle</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for v in viajes %}
+          <tr>
+            <td>{{ v.trip_request.pasajero.nombre }}</td>
+            <td>{{ v.trip_request.pickup_address_text }}</td>
+            <td>{{ v.trip_request.dropoff_address_text }}</td>
+            <td class="text-center">{{ v.trip_request.vehicle_type.title() }}</td>
+            <td class="text-center">Bs {{ v.trip_request.tarifa_estimada }}</td>
+            <td class="text-center">{{ v.datetime_ini.strftime('%d/%m/%Y %H:%M') if v.datetime_ini else '-' }}</td>
+            <td class="text-center">
+              <button class="btn btn-outline-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#detalles-{{ v.id }}">
+                Ver
+              </button>
+            </td>
+            <!-- <td class="text-center">
+              <form action="{{ url_for('trip.eliminar_viaje', trip_id=v.id) }}" method="POST">
+                <button class="btn btn-outline-danger btn-sm" onclick="return confirm('¿Eliminar este viaje?')">🗑️</button>
+              </form>
+            </td> -->
+          </tr>
+            <tr class="collapse bg-light" id="detalles-{{ v.id }}">
+                <td colspan="8">
+                    {% if v.ubicaciones|length >= 2 %}
+                    <strong>Ubicación de inicio:</strong><br>
+                    📍 {{ v.ubicaciones[0].latitude }}, {{ v.ubicaciones[0].longitude }}<br>
+                    🕒 {{ v.ubicaciones[0].timestamp.strftime('%d/%m/%Y %H:%M') }}<br><br>
+            
+                    <strong>Ubicación de destino:</strong><br>
+                    📍 {{ v.ubicaciones[-1].latitude }}, {{ v.ubicaciones[-1].longitude }}<br>
+                    🕒 {{ v.ubicaciones[-1].timestamp.strftime('%d/%m/%Y %H:%M') }}
+                    {% else %}
+                    <div class="text-muted">No hay ubicaciones registradas para este viaje.</div>
+                    {% endif %}
+                </td>
+            </tr>
+
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-info">No has finalizado viajes aún como conductor.</div>
+  {% endif %}
+</div>
+{% endblock %}

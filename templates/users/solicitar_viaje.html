@@ -1,0 +1,200 @@
+{% extends "baseuser.html" %}
+{% block title %}Solicitar Viaje{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 class="text-center mb-4">🛺 Solicita tu próximo viaje</h2>
+  <div class="row">
+    <!-- 📦 Formulario (izquierda) -->
+    <div class="col-md-4">
+      <form method="POST" class="bg-dark text-light p-4 rounded shadow-sm">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3 position-relative">
+          {{ form.pickup_address.label(class="form-label") }}
+          {{ form.pickup_address(class="form-control", id="pickup") }}
+          <ul class="list-group position-absolute w-100" id="pickup-results" style="z-index:1000;"></ul>
+        </div>
+
+        <div class="mb-3 position-relative">
+          {{ form.dropoff_address.label(class="form-label") }}
+          {{ form.dropoff_address(class="form-control", id="dropoff") }}
+          <ul class="list-group position-absolute w-100" id="dropoff-results" style="z-index:1000;"></ul>
+        </div>
+        <div class="mb-3">
+          {{ form.vehicle_type.label(class="form-label") }}
+          {{ form.vehicle_type(class="form-select") }}
+
+          <!-- Campos ocultos para enviar datos al backend -->
+          {{ form.pickup_lat }}
+          {{ form.pickup_lon }}
+          {{ form.dropoff_lat }}
+          {{ form.dropoff_lon }}
+          {{ form.distancia }}
+          {{ form.tarifa_estimada }}
+        </div>
+        <div class="mb-3">
+          {{ form.payment_method.label(class="form-label") }}
+          {{ form.payment_method(class="form-select") }}
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Tarifa estimada</label>
+          <input type="text" id="tarifa_estimada_mostrada" class="form-control" readonly>
+        </div>
+
+        <div class="text-end">
+          {{ form.submit(class="btn btn-warning") }}
+        </div>
+      </form>
+    </div>
+    <div id="calculando-tarifa" class="alert alert-warning d-none mt-2">
+      <i class="fas fa-spinner fa-spin me-2"></i> Calculando tarifa...
+    </div>
+    <!-- 🗺️ Mapa (derecha) -->
+    <div class="col-md-8">
+      <div id="map" style="height: 500px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.2);"></div>
+    </div>
+  </div>
+</div>
+<div class="alert alert-info mt-3" id="tarifa-box">
+  Tarifa estimada: <span id="tarifa">-</span>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+
+  <!-- Leaflet CSS y JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Leaflet Routing Machine para mostrar rutas -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css"/>
+  <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.min.js"></script>
+
+  <script>
+    const map = L.map('map').setView([-16.5000, -68.1500], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors',
+    }).addTo(map);
+
+    let pickupMarker, dropoffMarker;
+    let routeControl;  // ← para poder eliminar la ruta anterior si la hay
+
+    function createMarker(lat, lon, label, color = "blue") {
+      return L.marker([lat, lon], {
+        icon: L.icon({
+          iconUrl: `https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=${label}|${color}|000000`,
+          iconSize: [30, 45],
+          iconAnchor: [15, 45],
+        }),
+      }).addTo(map);
+    }
+
+    function updateRouteIfPossible() {
+        const alerta = document.getElementById('calculando-tarifa');
+        alerta.classList.remove('d-none'); // Mostrar aviso
+
+        if (pickupMarker && dropoffMarker) {
+          if (routeControl) map.removeControl(routeControl);
+
+          routeControl = L.Routing.control({
+            waypoints: [
+              pickupMarker.getLatLng(),
+              dropoffMarker.getLatLng()
+            ],
+            routeWhileDragging: false,
+            draggableWaypoints: false,
+            addWaypoints: false,
+            show: false
+          })
+            .on('routesfound', function (e) {
+              const distanceMeters = e.routes[0].summary.totalDistance;
+              const distanceKm = (distanceMeters / 1000).toFixed(2);
+
+              const tarifa = calcularTarifa(distanceKm);
+              document.getElementById('tarifa').textContent = `Bs ${tarifa}`;
+              document.getElementById('tarifa_estimada_mostrada').value = `Bs ${tarifa}`;
+              document.querySelector('input[name="tarifa_estimada"]').value = tarifa;
+
+              // Coords
+              document.querySelector('input[name="pickup_lat"]').value = pickupMarker.getLatLng().lat;
+              document.querySelector('input[name="pickup_lon"]').value = pickupMarker.getLatLng().lng;
+              document.querySelector('input[name="dropoff_lat"]').value = dropoffMarker.getLatLng().lat;
+              document.querySelector('input[name="dropoff_lon"]').value = dropoffMarker.getLatLng().lng;
+              document.querySelector('input[name="distancia"]').value = distanceKm;
+
+              alerta.classList.add('d-none'); // Ocultar aviso
+            })
+            .addTo(map);
+        }
+      }
+
+
+
+    function searchAddress(query, resultListId) {
+      const resultsList = document.getElementById(resultListId);
+      if (!query || query.length < 3) {
+        resultsList.innerHTML = "";
+        return;
+      }
+
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+        .then(response => response.json())
+        .then(data => {
+          resultsList.innerHTML = "";
+          data.slice(0, 5).forEach(place => {
+            const item = document.createElement("li");
+            item.className = "list-group-item list-group-item-action";
+            item.textContent = place.display_name;
+            item.onclick = () => {
+              document.getElementById(resultListId.replace('-results', '')).value = place.display_name;
+              resultsList.innerHTML = "";
+
+              const lat = parseFloat(place.lat);
+              const lon = parseFloat(place.lon);
+              map.setView([lat, lon], 15);
+
+              if (resultListId === "pickup-results") {
+                if (pickupMarker) map.removeLayer(pickupMarker);
+                pickupMarker = createMarker(lat, lon, "R", "green");
+              } else {
+                if (dropoffMarker) map.removeLayer(dropoffMarker);
+                dropoffMarker = createMarker(lat, lon, "D", "red");
+              }
+
+              updateRouteIfPossible();
+            };
+            resultsList.appendChild(item);
+          });
+        });
+    }
+
+    document.getElementById("pickup").addEventListener("input", e => {
+      searchAddress(e.target.value, "pickup-results");
+    });
+
+    document.getElementById("dropoff").addEventListener("input", e => {
+      searchAddress(e.target.value, "dropoff-results");
+    });
+  </script>
+    <script>
+      const tarifasPorVehiculo = {{ tarifas | tojson | safe }}; // Obtenemos las tarifas desde el backend
+    </script>
+  <script>
+    function calcularTarifa(distanciaKm) {
+      const tipoVehiculo = document.querySelector('select[name="vehicle_type"]').value;
+      const base = parseFloat(tarifasPorVehiculo[tipoVehiculo].base);
+      const porKm = parseFloat(tarifasPorVehiculo[tipoVehiculo].por_km);
+      return (base + distanciaKm * porKm).toFixed(2);
+    }
+
+    document.querySelector('select[name="vehicle_type"]').addEventListener('change', () => {
+      updateRouteIfPossible();  // Recalcula tarifa al cambiar tipo de vehículo
+    });
+  </script>
+
+{% endblock %}
+

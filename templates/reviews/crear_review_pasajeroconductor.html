@@ -1,0 +1,33 @@
+{% extends "baseconductor.html" %}
+{% block title %}Calificar Conductor{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h3 class="mb-3">⭐ Dejá tu reseña para este viaje</h3>
+
+  <div class="mb-4">
+    <p><strong>Conductor:</strong> {{ viaje.driver.nombre }}</p>
+    <p><strong>Recogida:</strong> {{ viaje.trip_request.pickup_address_text }}</p>
+    <p><strong>Destino:</strong> {{ viaje.trip_request.dropoff_address_text }}</p>
+  </div>
+
+  <form method="POST">
+    {{ form.hidden_tag() }}
+
+    <div class="mb-3">
+      {{ form.calificacion.label(class="form-label") }}
+      {{ form.calificacion(class="form-control", min="1", max="5", type="number") }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.comentario.label(class="form-label") }}
+      {{ form.comentario(class="form-control", rows="4") }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.submit(class="btn btn-success") }}
+      <a href="{{ url_for('trip.historial_pasajero') }}" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

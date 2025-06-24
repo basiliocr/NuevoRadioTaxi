@@ -1,0 +1,38 @@
+{% extends "baseconductor.html" %}
+{% block title %}Reseñas recibidas{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h3 class="mb-3">🗒️ Reseñas de {{ conductor.nombre }}</h3>
+
+  {% if promedio %}
+    <div class="alert alert-success">
+      ⭐ <strong>Calificación promedio:</strong> {{ promedio|round(1) }}/5<br>
+      🧾 <strong>Total de reseñas:</strong> {{ total }}
+    </div>
+  {% else %}
+    <div class="alert alert-warning">Este conductor aún no tiene reseñas.</div>
+  {% endif %}
+
+  {% if reseñas %}
+    <ul class="list-group">
+      {% for r in reseñas %}
+        <li class="list-group-item">
+          <div class="d-flex justify-content-between">
+            <strong>{{ r.reviewer.nombre }}</strong>
+            <span>{{ r.fecha_review.strftime('%d/%m/%Y %H:%M') }}</span>
+          </div>
+          <div>
+            ⭐ {{ r.calificacion }} / 5
+          </div>
+          {% if r.comentario %}
+            <div class="mt-2 fst-italic text-muted">{{ r.comentario }}</div>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <a href="{{ url_for('driver_profile.ver_perfil') }}" class="btn btn-secondary mt-4">← Volver al perfil</a>
+</div>
+{% endblock %}

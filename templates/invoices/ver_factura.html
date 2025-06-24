@@ -1,0 +1,27 @@
+{% extends "baseuser.html" %}
+{% block title %}Factura{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header bg-dark text-white">
+      🧾 Factura #{{ factura.invoice_number }}
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">Empresa: {{ factura.company_name }}</h5>
+      <p class="card-text"><strong>Fecha de emisión:</strong> {{ factura.fecha_emision.strftime('%d/%m/%Y %H:%M') }}</p>
+      <hr>
+
+      <p><strong>Cliente:</strong> {{ factura.detalles_json.usuario }}</p>
+      <p><strong>Origen:</strong> {{ factura.detalles_json.origen }}</p>
+      <p><strong>Destino:</strong> {{ factura.detalles_json.destino }}</p>
+      <p><strong>Tipo de Vehículo:</strong> {{ factura.detalles_json.vehículo.title() }}</p>
+      <p><strong>Fecha del viaje:</strong> {{ factura.detalles_json.fecha }}</p>
+      <hr>
+      <h5 class="text-end">💰 Total: Bs {{ factura.monto_total }}</h5>
+    </div>
+  </div>
+
+  <a href="{{ url_for('trip.historial_pasajero') }}" class="btn btn-secondary mt-4">← Volver</a>
+</div>
+{% endblock %}
