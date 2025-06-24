@@ -64,7 +64,6 @@
           <i class="fas fa-edit"></i>
         </a>
         <form action="{{ url_for('admin.toggle_estado_usuario', id=u.id) }}" method="POST" class="d-inline">
-          <button type="submit" class="btn btn-sm {% if u.activo %}btn-outline-dark{% else %}btn-success{% endif %}" title="{% if u.activo %}Bloquear{% else %}Activar{% endif %}">
             {% if u.activo %}
               <i class="fas fa-ban"></i>
             {% else %}
