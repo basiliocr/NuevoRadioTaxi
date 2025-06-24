@@ -1,7 +1,14 @@
 {% extends "base.html" %}
 {% set page_class = 'page-choose' %}
 {% block content %}
+
 <div class="hero">
+   <div style="padding: 10px;">
+    <a href="{{ url_for('home') }}" class="btn btn-danger"
+      style="color: white; background-color: #3c8ed1; padding: 8px 16px; border-radius: 5px; text-decoration: none;">
+      Volver
+    </a>
+  </div>
   <div class="main-box">
     <div class="form-box">
       <div>
