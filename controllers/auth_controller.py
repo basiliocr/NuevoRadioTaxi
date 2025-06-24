@@ -95,7 +95,7 @@ def register(role):
 def logout():
     logout_user()
     flash("Sesión cerrada correctamente.", "success")
-    return redirect(url_for("auth.login"))
+    return redirect(url_for("home"))
 
 @auth_bp.route("/check_username")
 def check_username():

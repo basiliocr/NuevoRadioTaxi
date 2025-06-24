@@ -27,12 +27,7 @@
 
     <div class="collapse navbar-collapse" id="navbarAdmin">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link {% if request.endpoint == 'admin.ver_solicitudes_admin' %}active{% endif %}" href="{{ url_for('admin.ver_solicitudes_admin') }}">Solicitudes</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {% if request.endpoint == 'admin.ver_viajes_admin' %}active{% endif %}" href="{{ url_for('admin.ver_viajes_admin') }}">Viajes</a>
-        </li>
+        
         <!-- Más enlaces administrativos en el futuro -->
       </ul>
       <ul class="navbar-nav d-flex">

@@ -16,6 +16,7 @@ from datetime import datetime
 from sqlalchemy.orm import joinedload
 from sqlalchemy import or_
 
+
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 
 @admin_bp.route("/solicitudes")
@@ -411,3 +412,68 @@ def estadisticas_financieras():
         ganancia_conductores=ganancia_conductores,
         desglose=desglose.values()
     )
+
+
+from flask import render_template, make_response, request
+from xhtml2pdf import pisa
+from io import BytesIO
+from datetime import datetime
+from sqlalchemy import extract
+from collections import defaultdict
+
+
+@admin_bp.route('/estadisticas/pdf')
+@login_required
+@role_required("admin")
+def exportar_pdf():
+    año = int(request.args.get("anio", datetime.now().year))
+    mes = int(request.args.get("mes", datetime.now().month))
+
+    PORCENTAJE_EMPRESA = 0.40
+    PORCENTAJE_CONDUCTOR = 0.60
+
+    viajes = Trip.query.filter(
+        extract("year", Trip.datetime_ini) == año,
+        extract("month", Trip.datetime_ini) == mes
+    ).all()
+
+    desglose = defaultdict(lambda: {
+        "nombre": "",
+        "viajes": 0,
+        "total": 0.0,
+        "empresa": 0.0,
+        "conductor": 0.0
+    })
+
+    total_monto = 0.0
+    for v in viajes:
+        if v.driver and v.trip_request and v.trip_request.tarifa_estimada:
+            monto = float(v.trip_request.tarifa_estimada)
+            cid = v.driver.id
+            desglose[cid]["nombre"] = v.driver.nombre
+            desglose[cid]["viajes"] += 1
+            desglose[cid]["total"] += monto
+            total_monto += monto
+
+    for d in desglose.values():
+        d["empresa"] = round(d["total"] * PORCENTAJE_EMPRESA, 2)
+        d["conductor"] = round(d["total"] * PORCENTAJE_CONDUCTOR, 2)
+
+    rendered = render_template("admin/estadisticas_pdf.html",
+        mes=mes,
+        anio=año,
+        total_viajes=len(viajes),
+        total_monto=round(total_monto, 2),
+        ganancia_empresa=round(total_monto * PORCENTAJE_EMPRESA, 2),
+        ganancia_conductores=round(total_monto * PORCENTAJE_CONDUCTOR, 2),
+        desglose=desglose.values()
+    )
+
+    pdf_stream = BytesIO()
+    pisa.CreatePDF(src=rendered, dest=pdf_stream)
+    pdf_stream.seek(0)
+
+    response = make_response(pdf_stream.read())
+    response.headers["Content-Type"] = "application/pdf"
+    response.headers["Content-Disposition"] = f"attachment; filename=estadisticas_{mes}_{año}.pdf"
+    return response

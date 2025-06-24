@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    h2 { text-align: center; margin-bottom: 30px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { border: 1px solid #999; padding: 8px; text-align: center; }
+    th { background-color: #f2f2f2; }
+    .totales { margin-top: 20px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <h2>Informe de Estadísticas - {{ mes }}/{{ anio }}</h2>
+
+  <div class="totales">
+    <p><strong>Total de viajes:</strong> {{ total_viajes }}</p>
+    <p><strong>Ingreso bruto:</strong> Bs {{ total_monto }}</p>
+    <p><strong>Ganancia empresa:</strong> Bs {{ ganancia_empresa }}</p>
+    <p><strong>Ganancia conductores:</strong> Bs {{ ganancia_conductores }}</p>
+  </div>
+
+  <h4 style="margin-top: 30px;">Desglose por Conductor</h4>
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Viajes</th>
+        <th>Total generado (Bs)</th>
+        <th>Comisión Empresa</th>
+        <th>Ganancia Conductor</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for d in desglose %}
+        <tr>
+          <td>{{ d.nombre }}</td>
+          <td>{{ d.viajes }}</td>
+          <td>{{ d.total }}</td>
+          <td>{{ d.empresa }}</td>
+          <td>{{ d.conductor }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

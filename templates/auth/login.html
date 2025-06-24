@@ -4,11 +4,11 @@
 {% block content %}
 <div class="hero">
 
-  <!-- 🔙 Botón para volver atrás -->
+  <!-- 🔓 Botón para cerrar sesión -->
   <div style="padding: 10px;">
-    <a href="{{ request.referrer or url_for('main.index') }}" class="btn btn-secondary"
-       style="color: rgb(10, 10, 10); background-color: #5276eb; padding: 8px 16px; border-radius: 5px; text-decoration: none;">
-      ⬅ Volver atrás
+    <a href="{{ url_for('auth.logout') }}" class="btn btn-danger"
+      style="color: white; background-color: #dc3545; padding: 8px 16px; border-radius: 5px; text-decoration: none;">
+      Volver
     </a>
   </div>
 
