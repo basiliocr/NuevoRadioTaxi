@@ -142,7 +142,7 @@ def dashboard_admin():
 @login_required
 @role_required("admin")
 def estadisticas_solicitudes():
-    estados = ["buscando", "aceptado", "finalizado", "rechazado"]
+    estados = ["buscando", "aceptado", "finalizado", "cancelado"]
     data = {estado: TripRequest.query.filter_by(estado=estado).count() for estado in estados}
     return render_template("estadistica/solicitudes.html", data=data)
 

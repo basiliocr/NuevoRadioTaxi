@@ -87,9 +87,12 @@ def dashboard_conductor():
 def finalizar_viaje(trip_id):
     viaje = Trip.query.get_or_404(trip_id)
 
+
     if viaje.driver_user_id != current_user.id:
         flash("Solo el conductor puede finalizar este viaje.", "danger")
         return redirect(url_for("trip.dashboard_conductor"))
+    
+    
     # Registramos punto de destino (llegada)
     fin_log = LocationLog(
         trip_id=viaje.id,
@@ -114,7 +117,7 @@ def finalizar_viaje(trip_id):
 def historial_pasajero():
     viajes = Trip.query.join(TripRequest).filter(
         TripRequest.passenger_user_id == current_user.id,
-        TripRequest.estado == "finalizado"
+        TripRequest.estado.in_(["finalizado", "cancelado"])
     ).order_by(TripRequest.fecha_solicitud.desc()).all()
 
     return render_template("trips/historial_pasajero.html", viajes=viajes)
@@ -126,7 +129,7 @@ def historial_pasajero():
 def historial_conductor():
     viajes = Trip.query.join(TripRequest).filter(
         Trip.driver_user_id == current_user.id,
-        TripRequest.estado == "finalizado"
+        TripRequest.estado.in_(["finalizado", "cancelado"])
     ).order_by(TripRequest.fecha_solicitud.desc()).all()
 
     return render_template("trips/historial_conductor.html", viajes=viajes)
@@ -146,8 +149,8 @@ def eliminar_viaje(trip_id):
         flash("No tienes permiso para eliminar este viaje.", "danger")
         return redirect(url_for("trip.historial_pasajero"))
 
-    if viaje.trip_request.estado != "finalizado":
-        flash("Solo puedes eliminar viajes finalizados.", "warning")
+    if viaje.trip_request.estado not in ["finalizado", "cancelado"]:
+        flash("Solo puedes eliminar viajes finalizados o cancelados.", "warning")
         return redirect(url_for("trip.historial_pasajero"))
 
     db.session.delete(viaje)
@@ -155,7 +158,7 @@ def eliminar_viaje(trip_id):
     flash("Viaje eliminado correctamente.", "info")
     return redirect(url_for("trip.historial_pasajero"))
 
-
+# Historial cuando el conductor viaja como pasajero
 @trip_bp.route("/historial/conductor-como-pasajero")
 @login_required
 @role_required("conductor")
@@ -166,3 +169,24 @@ def historial_pasajero_conductor():
     ).order_by(TripRequest.fecha_solicitud.desc()).all()
 
     return render_template("trips/historial_pasajeroconductor.html", viajes=viajes)
+
+
+# Cancelar solicitud antes de ser aceptada (estado: buscando)
+@trip_bp.route("/solicitudes/cancelar/<int:solicitud_id>", methods=["POST"])
+@login_required
+def cancelar_solicitud(solicitud_id):
+    solicitud = TripRequest.query.get_or_404(solicitud_id)
+
+    if solicitud.passenger_user_id != current_user.id:
+        flash("No tienes permiso para cancelar esta solicitud.", "danger")
+        return redirect(url_for("user.dashboard"))
+
+    if solicitud.estado != "buscando":
+        flash("Solo puedes cancelar solicitudes en estado 'buscando'.", "warning")
+        return redirect(url_for("user.dashboard"))
+
+    solicitud.estado = "cancelado"
+    db.session.commit()
+
+    flash("Solicitud cancelada exitosamente.", "info")
+    return redirect(url_for("user.dashboard"))
